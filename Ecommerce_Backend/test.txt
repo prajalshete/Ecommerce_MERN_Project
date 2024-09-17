@@ -1,0 +1,9 @@
+mongodb+srv://prajalshete:jKRpzNiiUuUWstGg@cluster0.uqq0bh6.mongodb.net/Ecommerce
+
+
+port   5005
+
+
+
+
+express nodemon body-parser mongoose
