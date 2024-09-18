@@ -43,10 +43,12 @@ if (req.user.role !== 'admin') { // Assuming 'role' field in user object
 
 
 
+
+
 async function getAllProducts(req,res){
     console.log("********")
     try{
-    result=await Product.find({},{__v:0});
+    const result=await Product.find({},{__v:0});
     console.log(result);
 
     const modifiedProducts = result.map(product => ({
@@ -65,6 +67,9 @@ async function getAllProducts(req,res){
     res.status(500).send(error);
 }
 }
+
+
+
 
 async function getWithQuery(req,res){
     console.log(req.query);
@@ -107,7 +112,7 @@ async function deleteProduct(req,res){
 
 async function updateProduct (req, res)  {
     try {
-        const { name, category, price, availability, quantity } = req.body;
+        const { name, category, price, available, quantity } = req.body;
 
         let product = await Product.findById(req.params.id);
         if (!product) {
