@@ -57,8 +57,8 @@ async function getAllProducts(req,res){
         productImage: product.image ? `http://localhost:5002/uploads/${product.image}` : null,
         category:product.category,
         price:product.price,
-        // availability:product.available ? 'InStock' : 'OutOfStock',
-        // quantity:product.quantity,
+        available:product.available ? 'InStock' : 'OutOfStock',
+        quantity:product.quantity,
       }));
   
     res.status(200).send( modifiedProducts);

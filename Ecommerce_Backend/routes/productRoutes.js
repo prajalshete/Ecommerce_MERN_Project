@@ -37,7 +37,9 @@ router.get('/getWithQuery',productControllers.getWithQuery);
 // router.post('/loginuser',userControllers.loginuser);
 
 
-router.get('/getProductsWithAuth', authorize.auth, productControllers.getAllProducts);
+// router.get('/getProductsWithAuth', authorize.auth, productControllers.getAllProducts);
+
+router.get('/getProductsWithAuth', productControllers.getAllProducts);
 
 
 module.exports=router;
