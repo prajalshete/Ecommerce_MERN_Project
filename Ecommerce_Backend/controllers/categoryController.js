@@ -1,5 +1,8 @@
 
 const Category = require('../models/categoryModel');
+const Product = require('../models/productModel'); // assuming your Product model is imported here
+
+
 
 exports.createCategory = async (req, res) => {
     console.log(req.body);
@@ -55,22 +58,23 @@ exports.updateCategory = async (req, res) => {
 };
 
 exports.deleteCategory = async (req, res) => {
-    console.log(req.params);
     try {
-        const {id}  = req.params;
-        console.log(id);
-        // let category = await Category.findById(id);
-        const result=await Category.findByIdAndDelete(id);
-        if (!result) {
-            return res.status(404).send({ msg: 'Category not found' });
+        const categoryId = req.params.id;
+
+        // Check if there are any products associated with this category
+        const productsInCategory = await Product.find({ category: categoryId });
+
+        if (productsInCategory.length > 0) {
+            return res.status(400).json({ msg: 'Cannot delete category. Category contains products.' });
         }
-       
-        res.status(200).send({ msg: 'Category removed' });
-       
+
+        // If no products, delete the category
+        await Category.findByIdAndDelete(categoryId);
+
+        res.status(200).json({ msg: 'Category deleted successfully!' });
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server error');
     }
 };
-
 

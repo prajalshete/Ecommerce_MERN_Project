@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 
 async function registeruser(req,res){
     console.log('Received request body:', req.body);
-    // const { username, email, password, mobileNumber, role } = req.body;
+    const { name, email, password, mobileNumber, role } = req.body;
 newEmail=req.body.email;
 try{
 userExist=await User.findOne({email:newEmail});
@@ -84,11 +84,29 @@ async function userInformation (req, res) {
 
 
 
+// New function to delete a user
+async function deleteUser(req, res) {
+    const id = req.params.id; // Get user ID from the request parameters
+    try {
+        const user = await User.findByIdAndDelete(id);
+        if (!user) {
+            return res.status(404).send({ message: 'User not found', success: false });
+        }
+        res.status(200).send({ message: 'User deleted successfully', success: true });
+    } catch (error) {
+        res.status(500).send({ error });
+    }
+}
+
+
+
+
 
 module.exports={
     registeruser,
     loginuser,
-    userInformation
+    userInformation,
+    deleteUser
    
     
 };

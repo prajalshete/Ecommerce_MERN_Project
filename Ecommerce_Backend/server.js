@@ -1,8 +1,13 @@
 const express = require('express');
+// In your server.js or app.js
+const path = require('path');
+
+
 const bodyParser=require('body-parser');
 const userRoutes=require('./routes/userRoutes');
 const productRoutes=require('./routes/productRoutes');
 const categoryRoutes=require('./routes/categoryRoutes');
+const paymentRoutes = require('./routes/payment');
 const {connectDB}=require('./config/db')
 
 
@@ -16,7 +21,8 @@ const app = express();
 //Middleware
 app.use(express.json());
 app.use(bodyParser.json());
-
+// Serve static files from the "uploads" directory
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 
 const cors=require('cors');
@@ -31,7 +37,7 @@ connectDB();
 app.use('/api/user',userRoutes);
 app.use('/api/product',productRoutes);
 app.use('/api/category',categoryRoutes);
-
-app.listen(5005, () => {
+app.use('/api', paymentRoutes);
+app.listen(5002, () => {
     console.log('server started');
 })

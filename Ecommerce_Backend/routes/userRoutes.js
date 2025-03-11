@@ -36,7 +36,7 @@ router.post('/loginuser', userControllers.loginuser);
 
 router.get('/getUserInfo', authorize.auth,userControllers.userInformation);
 
-// router.get('/getProductsWithAuth', authorise, productControllers.getAllProducts);
+router.delete('/deleteUser/:id', userControllers.deleteUser); // Delete user by ID
 
 
 module.exports=router;

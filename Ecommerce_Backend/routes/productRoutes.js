@@ -14,7 +14,7 @@ router.post('/addProduct', authorize.auth,authorize.admin, upload.single('image'
 
 // http://localhost:5005/api/getAllProducts
 
-router.get('/getWithQuery',productControllers.getWithQuery);
+router.get('/getWithQuery/:id',productControllers.getWithQuery);
 
 
 
@@ -27,7 +27,7 @@ router.get('/getWithQuery',productControllers.getWithQuery);
 
 //    http://localhost:5005/api/updateProduct
 
- router.put('/updateProduct/:id',productControllers.updateProduct);
+ router.patch('/updateProduct/:id',upload.single('image'), productControllers.updateProduct);
 
 //  http://localhost:5005/api/registeruser
 // router.post('/registeruser',userControllers.registeruser);
@@ -41,5 +41,6 @@ router.get('/getWithQuery',productControllers.getWithQuery);
 
 router.get('/getProductsWithAuth', productControllers.getAllProducts);
 
-
+// Route to get products with optional search filters
+router.get('/search', productControllers.getAllProducts);
 module.exports=router;

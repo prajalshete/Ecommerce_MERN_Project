@@ -1,71 +1,97 @@
+const mongoose = require('mongoose');
 const Product=require('../models/productModel')
-
-async function addProduct(req,res){
-    console.log("req.body getAllPoduct****",req.body);
-    console.log("req.file:", req.file); // Log file to ensure multer is working correctly
-    try{
-
- // Check if `req.user` exists (especially if using authentication)
-//  if (!req.user || !req.user.id) {
-//     return res.status(401).send({ message: "User not authenticated" });
-// }
+const Category = require('../models/categoryModel');
 
 
-// Check if the user is an admin
-if (req.user.role !== 'admin') { // Assuming 'role' field in user object
-    return res.status(403).send({ message: "Access denied" });
-}
+// Add a product
+async function addProduct (req, res)  {
+    try {
+        // Extract product details from the request body
+        const { name, category, price, quantity } = req.body;
 
-    // const newProduct=new Products(req.body);
+        // Validate if the category exists
+        const categoryExists = await Category.findById(category);
+        if (!categoryExists) {
+            return res.status(400).json({ msg: 'Category not found' });
+        }
 
- // Extract data from request body
- const { name, category, price, available, quantity } = req.body;
- // Handle file upload
- const image = req.file ? req.file.filename : null;
+        // Handle the uploaded image file
+        const image = req.file ? `http://localhost:5002/uploads/${req.file.filename}` : null;
 
-    product = new Product({
-        name,
-        image,
-        category,
-        price,
-        available,
-        quantity,
-        createdBy: req.user.id,
-    });
+        // Create the new product
+        const newProduct = new Product({
+            name,
+            category,
+            price,
+            quantity,
+            image,
+            // available: true, // Default availability
+        });
 
-    
-    const result= await product.save();
-    res.status(200).send({message:"product added successfully",task:result})
-    } catch(error){
-        res.status(500).send(error);
+        await newProduct.save();
+
+        res.status(201).json({ msg: 'Product added successfully', product: newProduct });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ msg: 'Server error' });
     }
-}
+};
 
 
 
 
 
-async function getAllProducts(req,res){
-    console.log("********")
-    try{
-    const result=await Product.find({},{__v:0});
-    console.log(result);
 
-    const modifiedProducts = result.map(product => ({
-        id: product._id,
-        name:product.name,
-        productImage: product.image ? `http://localhost:5002/uploads/${product.image}` : null,
-        category:product.category,
-        price:product.price,
-        available:product.available ? 'InStock' : 'OutOfStock',
-        quantity:product.quantity,
-      }));
-  
-    res.status(200).send( modifiedProducts);
-    // res.send('hello')
-}catch(error){
-    res.status(500).send(error);
-}
+// Get all products with optional filters
+async function getAllProducts(req, res) {
+    console.log("Fetching products with filters...");
+    const { category, productName } = req.query; // Extract query parameters
+
+    try {
+        const query = {};
+
+        // Apply category filter if provided
+        if (category) {
+            const categoryRegex = new RegExp(category, 'i'); // Case-insensitive regex
+            const categoryMatch = await Category.findOne({ name: categoryRegex }); // Match category
+            if (categoryMatch) {
+                query.category = categoryMatch._id; // Use matched category's ID
+            } else {
+                return res.status(404).send({ message: 'No matching category found' });
+            }
+        }
+
+        // Apply product name filter if provided
+        if (productName) {
+            query.name = new RegExp(productName, 'i'); // Case-insensitive regex
+        }
+
+        // Fetch products based on the query filters
+        const result = await Product.find(query, { __v: 0 })
+            .populate('category', 'name') // Populate category name
+            .exec();
+
+        // Check if any products were found
+        if (result.length === 0) {
+            return res.status(404).send({ message: 'No products found matching the search criteria' });
+        }
+
+        // Format the product data
+        const modifiedProducts = result.map(product => ({
+            id: product._id,
+            name: product.name,
+            image: product.image ? `${product.image}` : null,
+            category: product.category ? product.category.name : 'N/A',
+            price: product.price,
+            // available: !!product.available,
+            quantity: product.quantity,
+        }));
+
+        res.status(200).send(modifiedProducts); // Send the formatted product data
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        res.status(500).send({ error: 'Failed to fetch products' });
+    }
 }
 
 
@@ -110,29 +136,71 @@ async function deleteProduct(req,res){
 // }
 
 
-async function updateProduct (req, res)  {
-    try {
-        const { name, category, price, available, quantity } = req.body;
 
+
+async function updateProduct(req, res) {
+    try {
+        const { name, category, price, quantity } = req.body;
+
+        console.log("Incoming request data:", req.body);
+
+        // Find the product by ID
         let product = await Product.findById(req.params.id);
         if (!product) {
             return res.status(404).json({ msg: 'Product not found' });
         }
 
-        product.name = name || product.name;
-        product.category = category || product.category;
-        product.price = price || product.price;
-        product.available = available !== undefined ? available : product.available;
-        product.quantity = quantity || product.quantity;
+        console.log("Existing product:", product);
 
+        // If category is provided, validate if it exists
+        if (category) {
+            // Validate the category ID
+            if (!mongoose.Types.ObjectId.isValid(category)) {
+                return res.status(400).json({ msg: 'Invalid category ID' });
+            }
+
+            // Check if the category exists
+            const categoryExists = await Category.findById(category);
+            if (!categoryExists) {
+                return res.status(400).json({ msg: 'Category not found' });
+            }
+
+            product.category = category; // Update category
+        }
+
+        // Handle the uploaded image file
+        if (req.file) {
+            product.image = `http://localhost:5002/uploads/${req.file.filename}`;
+        }
+
+        // Update other product fields if provided
+        if (name) product.name = name;
+        if (price !== undefined) product.price = price;
+
+        // Update quantity explicitly if sent in the request
+        if (quantity !== undefined) {
+            if (quantity < 0) {
+                return res.status(400).json({ msg: 'Quantity cannot be negative.' });
+            }
+            product.quantity = quantity;
+        }
+
+        console.log("Updated product data before saving:", product);
+
+        // Save the updated product
         await product.save();
-        res.status(200).json(product);
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server error');
-    }
-};
 
+        console.log("Final updated product:", product);
+
+        res.status(200).json({
+            message: "Product updated successfully",
+            product,
+        });
+    } catch (err) {
+        console.error("Error:", err.message);
+        res.status(500).json({ msg: 'Server error', error: err.message });
+    }
+}
 
 
 
