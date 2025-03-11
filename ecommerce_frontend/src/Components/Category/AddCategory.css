@@ -1,0 +1,109 @@
+/* AddCategory styles */
+.add-category {
+    max-width: 600px;
+    margin: 80px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.add-category-title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.add-category-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.add-category-input {
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.add-category-btn {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.add-category-btn:hover {
+    background-color: #0056b3;
+}
+
+.add-category-list-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #555;
+}
+
+.add-category-list {
+    list-style: none;
+    padding: 0;
+}
+
+.add-category-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.add-category-name {
+    font-size: 16px;
+    color: #333;
+}
+
+.add-category-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.add-category-edit,
+.add-category-delete {
+    padding: 5px 10px;
+    font-size: 14px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.add-category-edit {
+    background-color: #ffc107;
+    color: #333;
+}
+
+.add-category-edit:hover {
+    background-color: #e0a800;
+}
+
+.add-category-delete {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.add-category-delete:hover {
+    background-color: #bd2130;
+}
+
+.add-category-empty {
+    text-align: center;
+    color: #666;
+    font-size: 16px;
+}

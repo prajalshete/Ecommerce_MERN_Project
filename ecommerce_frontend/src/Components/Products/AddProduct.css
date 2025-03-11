@@ -1,0 +1,92 @@
+/* AddProduct.css */
+
+/* General styling for the container */
+.add-product-container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+  }
+  
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  /* Style for the form elements */
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  form div {
+    margin-bottom: 15px;
+  }
+  
+  label {
+    font-size: 1rem;
+    color: #555;
+  }
+  
+  input, select {
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+  }
+  
+  select {
+    cursor: pointer;
+  }
+  
+  input[type="file"] {
+    padding: 5px;
+    font-size: 1rem;
+  }
+  
+  /* Button styling */
+  button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    color: white;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Error styling (in case of error alert) */
+  .alert {
+    color: white;
+    background-color: #f44336;
+    padding: 10px;
+    margin-top: 20px;
+    text-align: center;
+    border-radius: 5px;
+  }
+  
+  /* Responsive styling */
+  @media (max-width: 600px) {
+    .add-product-container {
+      padding: 15px;
+      margin: 0 10px;
+    }
+  
+    h2 {
+      font-size: 1.5rem;
+    }
+  
+    button {
+      font-size: 1.2rem;
+    }
+  }
+  

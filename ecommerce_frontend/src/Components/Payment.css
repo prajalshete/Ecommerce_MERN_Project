@@ -1,0 +1,36 @@
+/* src/components/Payment.css */
+
+.payment-container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+}
+
+.card-element {
+    margin-bottom: 20px;
+}
+
+button {
+    background-color: #5469d4;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+button:disabled {
+    background-color: #cccccc;
+}
+
+.error-message {
+    color: red;
+    margin-top: 10px;
+}
+
+.success-message {
+    color: green;
+    margin-top: 10px;
+}
